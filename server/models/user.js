@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema(
       default:
         "https://res.cloudinary.com/dfcaehp0b/image/upload/v1650481698/vd6bg6se3kbqutrd4cn1.png",
     },
+    role: {
+      type: String,
+      default: "member"
+    }
   },
   {
     timestamps: true,

@@ -24,7 +24,7 @@ const registerUser = asyncHandler(async (req, res) => {
     name,
     email,
     password,
-    image: pic,
+    image: pic !== "" ? pic : "https://res.cloudinary.com/dfcaehp0b/image/upload/v1650481698/vd6bg6se3kbqutrd4cn1.png",
   });
   //   ? response
   if (newUser) {
