@@ -34,6 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
         name: newUser.name,
         email: newUser.email,
         image: newUser.image,
+        role: newUser.role
       },
       message: "User registered successfully",
       token: generateToken(newUser._id),

@@ -198,6 +198,25 @@ const removeFromGroup = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc		add a new member to the group
+// @route		PUT /api/chats/deletegroup
+// @access		Private
+const deleteGroup = asyncHandler(async (req, res) => {
+  const { chatId } = req.body;
+  try {
+    const deleteChat = await Chat.deleteOne({_id: chatId})
+
+    if (!deleteChat) {
+      res.status(400);
+      throw new Error("Invalid chat");
+    } else {
+      res.status(200).json(deleteChat);
+    }
+  } catch (error) {
+    res.status(500);
+    throw new Error("Server could not work on the request");
+  }
+});
 module.exports = {
   accessChat,
   fetchChats,
@@ -205,4 +224,5 @@ module.exports = {
   renameGroup,
   addToGroup,
   removeFromGroup,
+  deleteGroup,
 };

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IoSettingsOutline } from "react-icons/io5";
+import { IoSettingsOutline, IoCloseSharp } from "react-icons/io5";
 import { useDisclosure } from "@chakra-ui/hooks";
 import {
   Modal,
@@ -183,10 +183,46 @@ const UpdateGroupChatModal = ({
       setLoading(false);
     }
   };
+
+  const handleDeleteGroup = async () => {
+    try {
+      if (window.confirm(`Are you going to delete ${selectedChat.chatName}?`) === false) {
+        return;
+      }
+
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      await axios.put(
+        `/api/chats/deletegroup`,
+        {
+          chatId: selectedChat._id,
+        },
+        config
+      );
+      setSelectedChat();
+      setFetchAgain(!fetchAgain);
+      fetchAllMessages();
+      setLoading(false);
+    } catch (err) {
+      toast.error(err);
+      setLoading(false);
+    }
+  };
+
   return (
-    <>
+    <Box 
+      d="flex"
+      justifyContent={{ base: "end" }}>
       <Button onClick={onOpen} d={{ base: "flex" }}>
         <IoSettingsOutline fontSize="1.4rem" />
+      </Button>
+
+      <Button onClick={handleDeleteGroup} d={{ base: "flex" }}>
+        <IoCloseSharp fontSize="1.4rem" />
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -204,7 +240,7 @@ const UpdateGroupChatModal = ({
           <Divider />
           <ModalBody>
             <Box>
-              <Text>Group Members</Text>
+              <Text>Team Members</Text>
               {selectedChat.users.map((user) => (
                 <UserBadgeItem
                   key={user._id}
@@ -215,7 +251,7 @@ const UpdateGroupChatModal = ({
             </Box>
             <FormControl d="flex" mt="5" width="100%">
               <Input
-                placeholder="Chat Name"
+                placeholder="Team Name"
                 value={groupChatName}
                 mb="1"
                 onChange={(e) => setGroupChatName(e.target.value)}
@@ -235,7 +271,7 @@ const UpdateGroupChatModal = ({
             </FormControl>
             <FormControl d="flex" width="100%">
               <Input
-                placeholder="Add members to group"
+                placeholder="Add members to team"
                 mb="3"
                 onChange={(e) => handleSearch(e.target.value)}
               />
@@ -290,7 +326,7 @@ const UpdateGroupChatModal = ({
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </Box>
   );
 };
 
