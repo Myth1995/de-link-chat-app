@@ -30,6 +30,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState();
   const [isTyping, setIsTyping] = useState();
+  const [text, setText] = useState("");
 
   const fetchAllMessages = async () => {
     if (!selectedChat) return;
@@ -109,14 +110,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
-  }, [user]);
+    if(selectedChat) {
+      setText(selectedChat.chatName || selectedChat.discussionName);
+    }
+  }, [user, selectedChat]);
 
   useEffect(() => {
     fetchAllMessages();
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
 
-  console.log(notification);
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
       if (
@@ -196,7 +199,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               </Text>
             ) : (
               <>
-                {selectedChat.discussionName.toUpperCase()}
+                {text.toUpperCase()}
                 <UpdateGroupChatModal
                   fetchAgain={fetchAgain}
                   setFetchAgain={setFetchAgain}

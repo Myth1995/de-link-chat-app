@@ -83,7 +83,7 @@ const MyChats = ({ fetchAgain }) => {
     >
       <Tabs w={{ base: "100%" }} align='start' variant='enclosed'>
         <TabList>
-          {/* <Tab>My Contracts</Tab> */}
+          <Tab>My Contracts</Tab>
           <Tab>Teams</Tab>
           <Tab>Discussions</Tab>
         </TabList>

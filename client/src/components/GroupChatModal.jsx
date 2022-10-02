@@ -54,7 +54,6 @@ const GroupChatModal = ({ children }) => {
     }
   };
   const handleSelectUser = (user) => {
-    console.log(user);
     if (selectedUser.includes(user)) {
       toast.info("User already added to the Group");
       return;
