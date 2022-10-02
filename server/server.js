@@ -8,6 +8,7 @@ const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const discussionRoutes = require("./routes/discussionRoutes");
 const path = require("path");
 
 dbConnect();
@@ -21,6 +22,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/notification", notificationRoutes);
+app.use("/api/discussions", discussionRoutes);
 
 // -----------------------------------------------------------------------------
 
