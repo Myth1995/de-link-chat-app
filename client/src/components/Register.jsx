@@ -77,7 +77,7 @@ const Register = () => {
       };
       console.log(name, email, password, pic);
       const { data } = await axios.post(
-        "http://localhost:5000/api/users",
+        "/api/users",
         { name, email, password, pic },
         config
       );

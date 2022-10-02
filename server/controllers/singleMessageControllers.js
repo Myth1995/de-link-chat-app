@@ -47,7 +47,8 @@ const sendMessage = asyncHandler(async (req, res) => {
 const fetchMessage = asyncHandler(async (req, res) => {
   const { chatId } = req.params;
   try {
-    const allMessages = await SingleMessage.find({ $or: [{receiver: chatId}, { sender: chatId}] })
+    const allMessages = await SingleMessage.find({ $or: [{$and: [{receiver: chatId}, {sender: req.user._id}]}, 
+      { $and: [{sender: chatId}, {receiver: req.user._id}]}] })
       .populate("receiver", "name image email")
       .populate("receiver")
       .populate("sender", "name image email")
