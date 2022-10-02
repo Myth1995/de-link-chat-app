@@ -118,6 +118,7 @@ const MyChats = ({ fetchAgain }) => {
                       <Box
                         onClick={() => {
                           setSelectedUser(el);
+                          setSelectedChat()
                         }}
                         cursor="pointer"
                         bg={selectedUser === el ? "#1d1931" : "e8e8e8"}
@@ -132,25 +133,26 @@ const MyChats = ({ fetchAgain }) => {
                           size="sm"
                           cursor="pointer"
                           // bg={chat.isGroupChat ? "#1d1931" : null}
-                          icon={el.image
+                          icon={el.image && 
                             // chat.isGroupChat && (
-                            //   <IoMdPeople fontSize="1.5rem" color="#fff" />
+                              <IoMdPeople fontSize="1.5rem" color="#fff" />
                             // )
                           }
                           src={el.image
                             // !chat.isGroupChat &&
-                            // getSender(loggedUser.user, chat.users)?.image
+                            // getSender(loggedUser.user, [el._id])?.image
                           }
                           name={el.name
                             // !chat.isGroupChat &&
-                            // getSender(loggedUser.user, chat.users).name
+                            // getSender(loggedUser.user, [el._id]).name
                           }
                           mr="4"
                         />
                         <Text fontSize="1.25rem">
-                          {el.name
+                          {
+                            el.name
                           // !chat.isGroupChat
-                          //   ? getSender(loggedUser?.user, chat?.users)?.name
+                            // getSender(loggedUser?.user, [el._id])?.name
                           //   : chat.discussionName
                             }
                         </Text>

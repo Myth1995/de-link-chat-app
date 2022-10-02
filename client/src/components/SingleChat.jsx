@@ -22,8 +22,7 @@ const ENDPOINT = "https://react-chat-vars.herokuapp.com";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
-  const { user, selectedChat, setSelectedChat, notification, setNotification } =
-    ChatState();
+  const { user, selectedChat, setSelectedChat, notification, setNotification, selectedUser } = ChatState();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState();
   const [loading, setLoading] = useState(false);
@@ -83,6 +82,58 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
+  const fetchAllMessagesSingle = async () => {
+    if (!selectedUser) return;
+    try {
+      setLoading(true);
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get(
+        `/api/single-message/${selectedUser._id}`,
+        config
+      );
+      setMessages(data);
+      setLoading(false);
+      socket.emit("join chat", selectedUser._id);
+    } catch (err) {
+      toast.error(err);
+      setLoading(false);
+      return;
+    }
+  };
+
+  const sendMessageSingle = async (e) => {
+    if (e.key === "Enter" && newMessage) {
+      socket.emit("stop typing", selectedUser._id);
+      console.log(selectedUser)
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        setNewMessage("");
+        const { data } = await axios.post(
+          "/api/single-message",
+          {
+            receiver: selectedUser._id,
+            content: newMessage,
+          },
+          config
+        );
+        socket.emit("new message", data);
+        setMessages([...messages, data]);
+      } catch (err) {
+        toast.error(err);
+        return;
+      }
+    }
+  };
+
   const saveNotification = async () => {
     if (!notification.length) return;
     try {
@@ -119,6 +170,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     fetchAllMessages();
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
+
+  useEffect(() => {
+    fetchAllMessagesSingle();
+    selectedChatCompare = selectedUser;
+  }, [selectedUser]);
 
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
@@ -243,6 +299,90 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           </FormControl>
         </>
       ) : (
+        selectedUser ? 
+        <>
+          <Box
+            py="3.0"
+            px="4"
+            w="100%"
+            d="flex"
+            justifyContent={{ base: "space-between" }}
+            alignItems="center"
+            bg="#fff"
+            borderRadius="lg"
+          >
+            <Box
+              d={{ base: "flex", md: "none" }}
+              mr="5"
+              onClick={() => setSelectedChat("")}
+            >
+              <IoIosArrowBack />
+            </Box>
+            {/* {!selectedChat.isGroupChat ? (
+              <Text
+                width="100%"
+                d="flex"
+                py="3"
+                alignItems="center"
+                justifyContent={{ base: "space-between" }}
+                fontSize={{ base: "1.5rem", md: "1.75rem" }}
+              >
+                <Box display="flex" flexDir="column" alignItems="flex-start">
+                  {getSender(user.user, selectedChat.users).name}
+
+                  <Box minH="10px">
+                    {isTyping && <Text fontSize="8px">Typing...</Text>}
+                  </Box>
+                </Box>
+
+                <ProfileModel user={getSender(user.user, selectedChat.users)} />
+              </Text>
+            ) : (
+              <>
+                {text.toUpperCase()}
+                <UpdateGroupChatModal
+                  fetchAgain={fetchAgain}
+                  setFetchAgain={setFetchAgain}
+                  fetchAllMessages={fetchAllMessages}
+                />
+              </>
+            )} */}
+          </Box>
+          <Box
+            d="flex"
+            flexDir="column"
+            p="3"
+            w="100%"
+            h={{ base: "73vh", md: "100%" }}
+            overflowY="hidden"
+          >
+            {loading ? (
+              <Loader />
+            ) : (
+              <div className="message">
+                {<ScrollableChat messages={messages} />}
+              </div>
+            )}
+          </Box>
+          <FormControl
+            onKeyDown={sendMessageSingle}
+            isRequired
+            mt={{ base: "1", md: "3" }}
+            border="1px solid #fff"
+            borderRadius="8px"
+          >
+            <Input
+              variant="outline"
+              bg="#1d1931"
+              h="4rem"
+              color="#fff"
+              placeholder="Enter a message..."
+              onChange={typingHandler}
+              value={newMessage}
+            />
+          </FormControl>
+        </> :
+        
         <Box
           d="flex"
           alignItems="center"
