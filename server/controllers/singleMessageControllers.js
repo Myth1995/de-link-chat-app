@@ -47,9 +47,11 @@ const sendMessage = asyncHandler(async (req, res) => {
 const fetchMessage = asyncHandler(async (req, res) => {
   const { chatId } = req.params;
   try {
-    const allMessages = await SingleMessage.find({ receiver: chatId })
+    const allMessages = await SingleMessage.find({ $or: [{receiver: chatId}, { sender: chatId}] })
       .populate("receiver", "name image email")
-      .populate("receiver");
+      .populate("receiver")
+      .populate("sender", "name image email")
+      .populate("sender");
     res.json(allMessages);
   } catch (err) {
     res.status(400);

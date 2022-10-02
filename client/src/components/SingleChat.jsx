@@ -82,10 +82,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
-  const fetchAllMessagesSingle = async () => {
+  const fetchAllMessagesSingle = async (flag = true) => {
     if (!selectedUser) return;
     try {
-      setLoading(true);
+      if(flag) {
+        setLoading(true);
+      }
       const config = {
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -96,7 +98,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         config
       );
       setMessages(data);
-      setLoading(false);
+      if(flag) {
+        setLoading(false);
+      }
       socket.emit("join chat", selectedUser._id);
     } catch (err) {
       toast.error(err);
@@ -127,6 +131,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         );
         socket.emit("new message", data);
         setMessages([...messages, data]);
+        fetchAllMessagesSingle(false);
       } catch (err) {
         toast.error(err);
         return;

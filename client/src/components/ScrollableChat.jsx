@@ -20,7 +20,7 @@ const ScrollableChat = ({ messages }) => {
             {(isSameSender(messages, message, index, user.user._id) ||
               isLastMessage(messages, index, user.user._id)) && (
               <Tooltip
-                label={message.receiver.name}
+                label={message.sender.name}
                 placement="bottom-start"
                 hasArrow
               >
@@ -29,8 +29,8 @@ const ScrollableChat = ({ messages }) => {
                   mr="1"
                   size="xs"
                   cursor="pointer"
-                  name={message.receiver.name}
-                  src={message.receiver.image}
+                  name={message.sender.name}
+                  src={message.sender.image}
                 />
               </Tooltip>
             )}
